@@ -9,10 +9,10 @@ public class FootballPlayer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;
 
-    private final String name;
-    private final int age;
+    private String name;
+    private int age;
     private int ratingScore;
-    private final String position;
+    private String position;
 
 
     public FootballPlayer(String name, int age, int ratingScore, String position) {
@@ -21,6 +21,8 @@ public class FootballPlayer {
         this.ratingScore = ratingScore;
         this.position = position;
     }
+
+    public FootballPlayer() {}
 
     public void setId(UUID id) {
         this.id = id;

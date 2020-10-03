@@ -4,6 +4,7 @@ import com.mvl.models.*;
 import com.mvl.repository.ChampionshipRepository;
 import com.mvl.repository.FootballClubRepository;
 import com.mvl.repository.TransferMarketRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,6 +17,7 @@ public class FootballWorldService {
     final private TransferMarketRepository transferMarketRepository;
     final private ChampionshipRepository championshipRepository;
 
+    @Autowired
     public FootballWorldService(FootballClubRepository footballClubRepository,
                                 TransferMarketRepository transferMarketRepository,
                                 ChampionshipRepository championshipRepository) {
@@ -24,6 +26,7 @@ public class FootballWorldService {
         this.championshipRepository = championshipRepository;
     }
 
+    @Transactional
     private void fillFootballClub(UUID clubId, UUID transferId) {
         footballClubRepository.findById(clubId).get().
                 addPlayerToFootballTeam(transferMarketRepository.findById(transferId).get()
@@ -45,6 +48,7 @@ public class FootballWorldService {
         return championshipRepository.findAll().get(0).toString();
     }
 
+    @Transactional
     public void buyPlayer(UUID ftClubId) {
         int countPlayersOnTransfer = transferMarketRepository.findAll().get(0)
                 .getPlayersOnTransfer().size();
@@ -68,10 +72,12 @@ public class FootballWorldService {
         }
     }
 
+    @Transactional
     public FootballClub getFootballClub(UUID clubId) {
         return footballClubRepository.findById(clubId).get();
     }
 
+    @Transactional
     public void sellPlayer(UUID ftClubId) {
         if (footballClubRepository.findById(ftClubId).get().getFootballTeam().size() > 4) {
             Random random = new Random();
@@ -92,6 +98,16 @@ public class FootballWorldService {
                                 + deal.getCostDeal());
             }
         }
+    }
+
+    @Transactional
+    public void createClub(FootballClub footballClub) {
+        footballClubRepository.save(footballClub);
+    }
+
+    @Transactional
+    public void createChampionship(Championship championship) {
+        championshipRepository.save(championship);
     }
 
 }

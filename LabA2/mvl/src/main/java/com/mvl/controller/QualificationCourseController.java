@@ -21,8 +21,9 @@ public class QualificationCourseController {
     }
 
     @GetMapping("/qualificationCourse/{id}")
-    public void qualificationCourse(@PathVariable UUID id) {
+    public ResponseEntity<Void> qualificationCourse(@PathVariable UUID id) {
        qualificationCourseService.levelUpTrainer(id);
+        return ResponseEntity.noContent().build();
     }
 }
 

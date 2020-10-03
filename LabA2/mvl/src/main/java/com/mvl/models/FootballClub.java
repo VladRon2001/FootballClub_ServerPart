@@ -12,20 +12,24 @@ public class FootballClub {
     private UUID id;
 
     @OneToOne
-    private final Trainer trainer;
+    private Trainer trainer;
 
     @OneToMany(targetEntity = FootballPlayer.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
-    private final List<FootballPlayer> footballTeam;
+    private List<FootballPlayer> footballTeam;
 
-    private final String clubName;
+    private String clubName;
     private int budget;
 
-    public FootballClub(String clubName, Trainer trainer, int budget) {
+    public FootballClub(String clubName, List<FootballPlayer> footballTeam, Trainer trainer, int budget) {
         this.clubName = clubName;
         this.budget = budget;
-        footballTeam = new ArrayList<FootballPlayer>();
+        this.footballTeam = footballTeam;
         this.trainer = trainer;
+    }
+
+    public FootballClub() {
+
     }
 
     public int getBudget() {

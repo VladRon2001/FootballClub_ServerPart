@@ -16,6 +16,9 @@ public class Trainer {
     private String name;
     private int skillLevel;
 
+    public Trainer() {
+    }
+
     public Trainer(String name, int skillLevel) {
         this.name = name;
         this.skillLevel = skillLevel;

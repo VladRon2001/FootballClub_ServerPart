@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,12 +20,21 @@ public class TransferMarkerService {
     }
 
     @Transactional
-    public TransferMarket getOne(UUID trMatketId) {
-        return transferMarketRepository.findById(trMatketId).get();
+    public void create(List<FootballPlayer> footballPlayers) {
+        transferMarketRepository.save(new TransferMarket(footballPlayers));
     }
 
     @Transactional
-    public void addPlayer(FootballPlayer footballPlayer, UUID trMarketId) {
-        transferMarketRepository.findById(trMarketId).get().addPlayerToTransfer(footballPlayer);
+    public void add(FootballPlayer footballPlayer) {
+        transferMarketRepository.findAll().get(0).addPlayerToTransfer(footballPlayer);
+    }
+
+    @Transactional
+    public void delete(FootballPlayer footballPlayer) {
+        transferMarketRepository.findAll().get(0).deletePlayerFromTransfer(footballPlayer);
+    }
+    @Transactional
+    public TransferMarket getAll() {
+        return transferMarketRepository.findAll().get(0);
     }
 }

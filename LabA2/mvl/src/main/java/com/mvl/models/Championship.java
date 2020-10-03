@@ -19,12 +19,12 @@ public class Championship {
     @ElementCollection(targetClass=Integer.class)
     private List<Integer> scores;
 
-    public Championship(List<FootballClub> participants) {
+    public Championship(List<FootballClub> participants, List<Integer> scores) {
         this.participants = participants;
+        this.scores = scores;
+    }
 
-        for(int i = 0; i < participants.size(); ++i) {
-            scores.add(0);
-        }
+    public Championship() {
     }
 
 
