@@ -21,7 +21,9 @@ public class TransferMarkerService {
 
     @Transactional
     public void create(List<FootballPlayer> footballPlayers) {
-        transferMarketRepository.save(new TransferMarket(footballPlayers));
+        if(transferMarketRepository.count() == 0) {
+            transferMarketRepository.save(new TransferMarket(footballPlayers));
+        }
     }
 
     @Transactional

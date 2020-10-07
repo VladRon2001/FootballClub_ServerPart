@@ -1,7 +1,6 @@
 package com.mvl.services;
 
 import com.mvl.models.*;
-import com.mvl.repository.ChampionshipRepository;
 import com.mvl.repository.FootballClubRepository;
 import com.mvl.repository.TransferMarketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,37 +14,12 @@ import java.util.UUID;
 public class FootballWorldService {
     final private FootballClubRepository footballClubRepository;
     final private TransferMarketRepository transferMarketRepository;
-    final private ChampionshipRepository championshipRepository;
 
     @Autowired
     public FootballWorldService(FootballClubRepository footballClubRepository,
-                                TransferMarketRepository transferMarketRepository,
-                                ChampionshipRepository championshipRepository) {
+                                TransferMarketRepository transferMarketRepository) {
         this.footballClubRepository = footballClubRepository;
         this.transferMarketRepository = transferMarketRepository;
-        this.championshipRepository = championshipRepository;
-    }
-
-    @Transactional
-    private void fillFootballClub(UUID clubId, UUID transferId) {
-        footballClubRepository.findById(clubId).get().
-                addPlayerToFootballTeam(transferMarketRepository.findById(transferId).get()
-                        .getPlayerByPosition("GK"));
-        footballClubRepository.findById(clubId).get().
-                addPlayerToFootballTeam(transferMarketRepository.findById(transferId).get()
-                        .getPlayerByPosition("DF"));
-        footballClubRepository.findById(clubId).get().
-                addPlayerToFootballTeam(transferMarketRepository.findById(transferId).get()
-                        .getPlayerByPosition("CM"));;
-        footballClubRepository.findById(clubId).get().
-                addPlayerToFootballTeam(transferMarketRepository.findById(transferId).get()
-                        .getPlayerByPosition("ST"));
-    }
-
-    @Transactional
-    public String playRound() {
-        championshipRepository.findAll().get(0).playRound();
-        return championshipRepository.findAll().get(0).toString();
     }
 
     @Transactional
@@ -102,12 +76,55 @@ public class FootballWorldService {
 
     @Transactional
     public void createClub(FootballClub footballClub) {
-        footballClubRepository.save(footballClub);
+        boolean exist = false;
+        for(FootballClub footballClub1: footballClubRepository.findAll()) {
+            if(footballClub.getClubName().equals(footballClub1.getClubName())) {
+                exist = true;
+                break;
+            }
+        }
+
+        if(!exist) {
+            footballClubRepository.save(footballClub);
+        }
+    }
+
+    private void playGame(FootballClub participantOne, FootballClub participantTwo) {
+        final Random random = new Random();
+        int diffrenceFootballClub = participantOne.calculateStrongTeam()
+                - participantTwo.calculateStrongTeam();
+
+        int resultGame = diffrenceFootballClub + random.nextInt(30) - random.nextInt(30);
+
+        if (resultGame > 10) {
+            participantOne.setScore(participantOne.getScore() + 3);
+        }
+        else if (resultGame < -10) {
+            participantTwo.setScore(participantTwo.getScore() + 3);
+        }
+        else {
+            participantOne.setScore(participantOne.getScore() + 1);
+            participantTwo.setScore(participantTwo.getScore() + 1);
+        }
     }
 
     @Transactional
-    public void createChampionship(Championship championship) {
-        championshipRepository.save(championship);
+    public String results() {
+        String result = "";
+        for(FootballClub footballClub:footballClubRepository.findAll()) {
+            result += footballClub.getClubName() +" " + footballClub.getScore() + "\n";
+        }
+
+        return result;
+    }
+
+    @Transactional
+    public void playRound() {
+        for(int i = 0; i < footballClubRepository.findAll().size(); ++i) {
+            for(int j = i + 1; j < footballClubRepository.findAll().size(); ++j) {
+                playGame(footballClubRepository.findAll().get(i), footballClubRepository.findAll().get(j));
+            }
+        }
     }
 
 }

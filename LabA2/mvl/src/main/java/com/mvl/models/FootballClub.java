@@ -1,7 +1,6 @@
 package com.mvl.models;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,7 +10,7 @@ public class FootballClub {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Trainer trainer;
 
     @OneToMany(targetEntity = FootballPlayer.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -20,16 +19,27 @@ public class FootballClub {
 
     private String clubName;
     private int budget;
+    @GeneratedValue
+    private int score;
 
     public FootballClub(String clubName, List<FootballPlayer> footballTeam, Trainer trainer, int budget) {
         this.clubName = clubName;
         this.budget = budget;
         this.footballTeam = footballTeam;
         this.trainer = trainer;
+        score = 0;
     }
 
     public FootballClub() {
 
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public int getBudget() {
